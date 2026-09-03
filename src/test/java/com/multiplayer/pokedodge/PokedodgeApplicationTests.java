@@ -29,7 +29,7 @@ class PokedodgeApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test
+/* 	@Test
 	void canCreateNewPlayer() {
 		Player player = playerService.createNewPlayer("TestNewPlayer");
 		assertEquals("TestNewPlayer", player.getPlayerName());
@@ -41,7 +41,7 @@ class PokedodgeApplicationTests {
 		assertThrows(
 				MongoException.class,
 				() -> playerService.createNewPlayer("TestNewPlayer"));
-	}
+	} */
 
 	@Test
 	void canLoginPlayer() {

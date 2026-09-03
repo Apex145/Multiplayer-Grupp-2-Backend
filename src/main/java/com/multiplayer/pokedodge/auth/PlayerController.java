@@ -1,9 +1,11 @@
 package com.multiplayer.pokedodge.auth;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -16,11 +18,12 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/create")
-    public Player createNewPlayer(@RequestParam String playerName) {
-        return playerService.createNewPlayer(playerName);
+    @PostMapping("/login")
+    public Player tryLogin(@RequestBody String playerName) {
+        if (playerName.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playername required");
+        }
+        return playerService.loginPlayer(playerName.trim());
     }
-    
-
 
 }
