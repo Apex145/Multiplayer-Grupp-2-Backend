@@ -20,9 +20,9 @@ public class PlayerController {
 
     @PostMapping("/login")
     public Player tryLogin(@RequestBody String playerName) {
-        if (playerName.isBlank()) {
+/*         if (playerName.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playername required");
-        }
+        } */
         return playerService.loginPlayer(playerName.trim());
     }
 

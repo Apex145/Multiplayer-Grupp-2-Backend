@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.mongodb.MongoException;
 import com.multiplayer.pokedodge.auth.Player;
@@ -44,7 +45,11 @@ class PokedodgeApplicationTests {
 	} */
 
 	@Test
-	void canLoginPlayer() {
+	void canLoginOrCreatePlayer() {
+		Player player = playerService.loginPlayer("TestUser");
+		assertEquals("TestUser", player.getPlayerName());
+		assertThrows(ResponseStatusException.class, () -> playerService.loginPlayer(""));
+		assertThrows(ResponseStatusException.class, () -> playerService.loginPlayer(null));
 	}
 
 	@Test
