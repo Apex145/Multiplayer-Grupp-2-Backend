@@ -4,11 +4,11 @@ import java.util.UUID;
 
 public class FallingBlock {
     private final String id;
-    private double x;
+    private int x;
     private double y;
     private double speed; // speed at which the block falls, per tick
 
-    public FallingBlock(double x, double speed) {
+    public FallingBlock(int x, double speed) {
         this.id = UUID.randomUUID().toString();
         this.x = x;
         this.y = 100.0; // start at the top
@@ -23,11 +23,11 @@ public class FallingBlock {
         return id;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(int x) {
         this.x = x;
     }
 
