@@ -3,6 +3,8 @@ package com.multiplayer.pokedodge;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat; 
+
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -14,8 +16,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.mongodb.MongoException;
 import com.multiplayer.pokedodge.auth.Player;
+import com.multiplayer.pokedodge.auth.PlayerGameStatus;
 import com.multiplayer.pokedodge.auth.PlayerRepository;
 import com.multiplayer.pokedodge.auth.PlayerService;
+import com.multiplayer.pokedodge.game.GameService;
 
 @SpringBootTest
 class PokedodgeApplicationTests {
@@ -25,6 +29,9 @@ class PokedodgeApplicationTests {
 
 	@Autowired
 	PlayerRepository playerRepository;
+
+	@Autowired
+	GameService gameService;
 
 	@Test
 	void contextLoads() {
@@ -44,6 +51,12 @@ class PokedodgeApplicationTests {
 				() -> playerService.createNewPlayer("TestNewPlayer"));
 	} */
 
+
+	Player createTestPlayer(String playerName){
+		return new Player().setPlayerName(playerName);
+	}
+
+
 	@Test
 	void canLoginOrCreatePlayer() {
 		Player player = playerService.loginPlayer("TestUser");
@@ -54,6 +67,7 @@ class PokedodgeApplicationTests {
 
 	@Test
 	void playerCannotMovePastRightWall() {
+
 	}
 
 	@Test
@@ -62,6 +76,19 @@ class PokedodgeApplicationTests {
 
 	@Test
 	void playerSpawnsAtMiddle() {
+		Player testPlayer = createTestPlayer("TestPlayer");
+		PlayerGameStatus gameStatus = gameService.spawnPlayer(testPlayer, 1);
+		assertEquals(gameStatus.getX(), 50);
+	}
+
+	@Test 
+	void playerCanNotMoveOutsideOfGameFrame() {
+		Player testPlayer = createTestPlayer("TestPlayer");
+		PlayerGameStatus gameStatus = gameService.spawnPlayer(testPlayer, 1);
+		gameStatus.setX(-1);
+		assertEquals(0, gameStatus.getX());
+		gameStatus.setX(101);
+		assertEquals(100, gameStatus.getX());
 	}
 
 	@Test
