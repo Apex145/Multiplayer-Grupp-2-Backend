@@ -7,6 +7,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import com.multiplayer.pokedodge.auth.Player;
 import com.multiplayer.pokedodge.auth.PlayerGameStatus;
 import com.multiplayer.pokedodge.auth.PlayerRepository;
 import com.multiplayer.pokedodge.auth.PlayerService;
+import com.multiplayer.pokedodge.game.FallingBlock;
 import com.multiplayer.pokedodge.game.GameService;
 
 @SpringBootTest
@@ -37,21 +40,6 @@ class PokedodgeApplicationTests {
 	void contextLoads() {
 	}
 
-/* 	@Test
-	void canCreateNewPlayer() {
-		Player player = playerService.createNewPlayer("TestNewPlayer");
-		assertEquals("TestNewPlayer", player.getPlayerName());
-	}
-
-	@Test
-	void playerAlreadyExists() {
-
-		assertThrows(
-				MongoException.class,
-				() -> playerService.createNewPlayer("TestNewPlayer"));
-	} */
-
-
 	Player createTestPlayer(String playerName){
 		return new Player().setPlayerName(playerName);
 	}
@@ -59,32 +47,20 @@ class PokedodgeApplicationTests {
 
 	@Test
 	void canLoginOrCreatePlayer() {
-		Player player = playerService.loginPlayer("TestUser");
-		assertEquals("TestUser", player.getPlayerName());
+		assertEquals("TestUser", createTestPlayer("TestPlayer").getPlayerName());
 		assertThrows(ResponseStatusException.class, () -> playerService.loginPlayer(""));
 		assertThrows(ResponseStatusException.class, () -> playerService.loginPlayer(null));
 	}
 
 	@Test
-	void playerCannotMovePastRightWall() {
-
-	}
-
-	@Test
-	void playerCannotMovePastLeftWall() {
-	}
-
-	@Test
 	void playerSpawnsAtMiddle() {
-		Player testPlayer = createTestPlayer("TestPlayer");
-		PlayerGameStatus gameStatus = gameService.spawnPlayer(testPlayer, 1);
+		PlayerGameStatus gameStatus = gameService.spawnPlayer(createTestPlayer("TestPlayer"), 1);
 		assertEquals(gameStatus.getX(), 50);
 	}
 
 	@Test 
 	void playerCanNotMoveOutsideOfGameFrame() {
-		Player testPlayer = createTestPlayer("TestPlayer");
-		PlayerGameStatus gameStatus = gameService.spawnPlayer(testPlayer, 1);
+		PlayerGameStatus gameStatus = gameService.spawnPlayer(createTestPlayer("TestPlayer"), 1);
 		gameStatus.setX(-1);
 		assertEquals(0, gameStatus.getX());
 		gameStatus.setX(101);
@@ -116,6 +92,17 @@ class PokedodgeApplicationTests {
 
 	@Test
 	void pokeBallsDropAtRandomPositions() {
+
+		List<Integer> blockPositions = new ArrayList<Integer>();
+
+		while (blockPositions.size() < 10){
+			FallingBlock fallingBlock = gameService.spawnRandomBlock();
+			if (fallingBlock.getX() > 0 && fallingBlock.getX() < 90 && !blockPositions.contains(fallingBlock.getX())) {
+				blockPositions.add(fallingBlock.getX());
+			};
+		}
+
+		assertEquals(10, blockPositions.size());
 	}
 
 	@Test
