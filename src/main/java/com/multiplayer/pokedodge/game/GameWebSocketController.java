@@ -11,10 +11,8 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/players")
     @SendTo("/pokemon/players")
-    public String players(Player player) {
-
-        return player.getPlayerName();
-
+    public String players(String player) {
+        return player;
     }
 
     @MessageMapping("/game/move")
