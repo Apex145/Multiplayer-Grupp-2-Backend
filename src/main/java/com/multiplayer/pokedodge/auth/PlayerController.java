@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/auth/player")
 public class PlayerController {
@@ -20,9 +19,6 @@ public class PlayerController {
 
     @PostMapping("/login")
     public Player tryLogin(@RequestBody String playerName) {
-/*         if (playerName.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playername required");
-        } */
         return playerService.loginPlayer(playerName.trim());
     }
 
