@@ -8,14 +8,17 @@ import org.springframework.stereotype.Controller;
 
 import com.multiplayer.pokedodge.auth.Player;
 import com.multiplayer.pokedodge.auth.PlayerService;
+import com.multiplayer.pokedodge.game.GameService.LeaderBoardItem;
 
 @Controller
 public class GameWebSocketController {
 
     private PlayerService playerService;
+    private GameService gameService;
 
-    public GameWebSocketController(PlayerService playerService) {
+    public GameWebSocketController(PlayerService playerService, GameService gameService) {
         this.playerService = playerService;
+        this.gameService = gameService;
     }
 
     @MessageMapping("/game/players")
@@ -29,5 +32,12 @@ public class GameWebSocketController {
     public PlayerMoveMessage movePlayer(PlayerMoveMessage message) {
 
         return message;
+    }
+
+    @MessageMapping("/game/leaderboard")
+    @SendTo("/pokemon/leaderboard")
+    public List<LeaderBoardItem> leaderboard() {
+
+        return gameService.getLeaderBoard();
     }
 }
