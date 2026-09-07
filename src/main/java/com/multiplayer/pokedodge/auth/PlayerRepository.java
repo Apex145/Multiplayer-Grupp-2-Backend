@@ -9,5 +9,5 @@ public interface PlayerRepository extends MongoRepository<Player, String> {
 
     Optional<Player> findByPlayerName(String playerName);
 
-    List<Player> findByGamesWonOrderByGamesWonDesc();
+    List<Player> findTop4ByOrderByGamesWonDesc();
 }
