@@ -2,6 +2,8 @@ package com.multiplayer.pokedodge.auth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,14 +14,14 @@ public class PlayerService {
 
     private PlayerRepository playerRepository;
 
-    private List<String> loggedInPlayers = new ArrayList<>();
+    private final Map<String, String> loggedInPlayers = new ConcurrentHashMap<>();
 
     public PlayerService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
     public List<String> getLoggedInPlayers() {
-        return this.loggedInPlayers;
+        return new ArrayList<>(loggedInPlayers.values());
     }
 
     public Player loginPlayer(String playerName) {
@@ -30,10 +32,17 @@ public class PlayerService {
             if (loggedInPlayers.size() >= 4) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
             }
-            loggedInPlayers.add(playerName);
         }
 
         return playerRepository.findByPlayerName(playerName)
                 .orElseGet(() -> playerRepository.save(new Player().setPlayerName(playerName)));
+    }
+
+    public void removePlayer(String sessionId) {
+        loggedInPlayers.remove(sessionId);
+    }
+
+    public void joinLobby(String sessionId, String playerName) {
+        loggedInPlayers.put(sessionId, playerName);
     }
 }
