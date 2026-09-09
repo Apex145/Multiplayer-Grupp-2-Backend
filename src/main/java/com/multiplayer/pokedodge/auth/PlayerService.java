@@ -1,6 +1,6 @@
 package com.multiplayer.pokedodge.auth;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,49 +12,71 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class PlayerService {
 
+    private static final int MAX_PLAYERS = 4;
+    private static final double TICK_STEP = 2.5; // how far a player moves per tick
+
     private PlayerRepository playerRepository;
 
-    private final Map<String, String> loggedInPlayers = new ConcurrentHashMap<>();
+    private final Map<String, PlayerGameStatus> playersInLobby = new ConcurrentHashMap<>();
 
     public PlayerService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
-    public List<String> getLoggedInPlayers() {
-        return new ArrayList<>(loggedInPlayers.values());
+    public List<PlayerGameStatus> getLoggedInPlayers() {
+        return playersInLobby.values().stream()
+                .sorted(Comparator.comparingInt(PlayerGameStatus::getSlot))
+                .toList();
     }
 
     public Player loginPlayer(String playerName) {
 
         if (playerName == null || playerName.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playername required");
-        } else {
-
-            /// EJ PROPERLY IMPLEMENTERAD 
-            PlayerGameStatus player = new PlayerGameStatus();            
-            switch (loggedInPlayers.size()) {
-                case 0 : player.setSlot(1); break;
-                case 1 : player.setSlot(2); break;
-                case 2 : player.setSlot(3); break;
-                case 3 : player.setSlot(4); break;
-                default : throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
-            }
-
-
         }
-
         return playerRepository.findByPlayerName(playerName)
                 .orElseGet(() -> playerRepository.save(new Player().setPlayerName(playerName)));
     }
 
     public void removePlayer(String sessionId) {
-        loggedInPlayers.remove(sessionId);
+        playersInLobby.remove(sessionId);
     }
 
     public void joinLobby(String sessionId, String playerName) {
-        if (loggedInPlayers.size() >= 4) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
+        if (playersInLobby.containsKey(sessionId)) {
+            return;
         }
-        loggedInPlayers.put(sessionId, playerName);
+        playersInLobby.put(sessionId, new PlayerGameStatus()
+                .setPlayerName(playerName)
+                .setSessionId(sessionId)
+                .setSlot(setPlayerSlot())
+                .setX(50)
+                .setY(0)
+                .setAlive(true));
     }
+
+    private int setPlayerSlot() {
+        if (playersInLobby.size() >= MAX_PLAYERS) {
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
+        }
+        return playersInLobby.size() + 1;
+    }
+
+    public void setDirection(String sessionId, String direction) {
+        PlayerGameStatus player = playersInLobby.get(sessionId);
+        if (player != null) {
+            switch (direction) {
+                case "left" -> player.setDirection(-1);
+                case "right" -> player.setDirection(1);
+                case "none" -> player.setDirection(0);
+            }
+        }
+    }
+
+    public void tick() {
+        for (PlayerGameStatus player : playersInLobby.values()) {
+            player.advance(TICK_STEP);
+        }
+    }
+
 }

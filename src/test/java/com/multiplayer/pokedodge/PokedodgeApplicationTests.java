@@ -47,7 +47,7 @@ class PokedodgeApplicationTests {
 
 	@Test
 	void canLoginOrCreatePlayer() {
-		assertEquals("TestUser", createTestPlayer("TestPlayer").getPlayerName());
+		assertEquals("TestPlayer", createTestPlayer("TestPlayer").getPlayerName());
 		assertThrows(ResponseStatusException.class, () -> playerService.loginPlayer(""));
 		assertThrows(ResponseStatusException.class, () -> playerService.loginPlayer(null));
 	}

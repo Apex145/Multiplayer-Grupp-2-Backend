@@ -7,7 +7,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
-import com.multiplayer.pokedodge.auth.Player;
+import com.multiplayer.pokedodge.auth.PlayerGameStatus;
 import com.multiplayer.pokedodge.auth.PlayerService;
 import com.multiplayer.pokedodge.game.GameService.LeaderBoardItem;
 
@@ -24,14 +24,14 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/players")
     @SendTo("/pokemon/players")
-    public List<String> players() {
+    public List<PlayerGameStatus> players() {
         return playerService.getLoggedInPlayers();
     }
 
+    
     @MessageMapping("/game/move")
-    @SendTo("/pokemon/game")
-    public PlayerMoveMessage movePlayer(PlayerMoveMessage message) {
-        return message;
+    public void movePlayer(String playerMoveDirection, SimpMessageHeaderAccessor accessor) {
+        playerService.setDirection(accessor.getSessionId(), playerMoveDirection);
     }
 
     @MessageMapping("/game/leaderboard")
@@ -43,15 +43,22 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/join")
     @SendTo("/pokemon/players")
-    public List<String> join(String playerName, SimpMessageHeaderAccessor accessor) {
+    public List<PlayerGameStatus> join(String playerName, SimpMessageHeaderAccessor accessor) {
         playerService.joinLobby(accessor.getSessionId(), playerName.trim());
         return playerService.getLoggedInPlayers();
     }
-    
+
+    @MessageMapping("/game/leave")
+    @SendTo("/pokemon/players")
+    public List<PlayerGameStatus> leave(SimpMessageHeaderAccessor accessor) {
+        playerService.removePlayer(accessor.getSessionId());
+        return playerService.getLoggedInPlayers();
+    }
+
     @MessageMapping("/game/start")
     @SendTo("/pokemon/start")
     public String startGame() {
         return "true";
     }
- 
+
 }
