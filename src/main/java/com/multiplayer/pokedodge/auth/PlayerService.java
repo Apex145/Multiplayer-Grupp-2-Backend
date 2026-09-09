@@ -29,9 +29,18 @@ public class PlayerService {
         if (playerName == null || playerName.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playername required");
         } else {
-            if (loggedInPlayers.size() >= 4) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
+
+            /// EJ PROPERLY IMPLEMENTERAD 
+            PlayerGameStatus player = new PlayerGameStatus();            
+            switch (loggedInPlayers.size()) {
+                case 0 : player.setSlot(1); break;
+                case 1 : player.setSlot(2); break;
+                case 2 : player.setSlot(3); break;
+                case 3 : player.setSlot(4); break;
+                default : throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
             }
+
+
         }
 
         return playerRepository.findByPlayerName(playerName)
@@ -43,6 +52,9 @@ public class PlayerService {
     }
 
     public void joinLobby(String sessionId, String playerName) {
+        if (loggedInPlayers.size() >= 4) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
+        }
         loggedInPlayers.put(sessionId, playerName);
     }
 }

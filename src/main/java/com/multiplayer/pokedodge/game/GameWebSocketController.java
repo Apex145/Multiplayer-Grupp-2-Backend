@@ -47,4 +47,11 @@ public class GameWebSocketController {
         playerService.joinLobby(accessor.getSessionId(), playerName.trim());
         return playerService.getLoggedInPlayers();
     }
+    
+    @MessageMapping("/game/start")
+    @SendTo("/pokemon/start")
+    public String startGame() {
+        return "true";
+    }
+ 
 }
