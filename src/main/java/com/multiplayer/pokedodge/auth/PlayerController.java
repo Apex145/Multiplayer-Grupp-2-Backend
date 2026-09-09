@@ -2,8 +2,6 @@ package com.multiplayer.pokedodge.auth;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,6 +18,11 @@ public class PlayerController {
     @PostMapping("/login")
     public Player tryLogin(@RequestBody String playerName) {
         return playerService.loginPlayer(playerName.trim());
+    }
+
+    @PostMapping("/logout")
+    public void tryLogout(@RequestBody String playerSessionId) {
+        playerService.removePlayer(playerSessionId);      
     }
 
 }

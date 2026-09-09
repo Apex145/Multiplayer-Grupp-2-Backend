@@ -7,7 +7,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
-import com.multiplayer.pokedodge.auth.Player;
+import com.multiplayer.pokedodge.auth.PlayerGameStatus;
 import com.multiplayer.pokedodge.auth.PlayerService;
 import com.multiplayer.pokedodge.game.GameService.LeaderBoardItem;
 
@@ -24,7 +24,7 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/players")
     @SendTo("/pokemon/players")
-    public List<String> players() {
+    public List<PlayerGameStatus> players() {
         return playerService.getLoggedInPlayers();
     }
 
@@ -43,7 +43,7 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/join")
     @SendTo("/pokemon/players")
-    public List<String> join(String playerName, SimpMessageHeaderAccessor accessor) {
+    public List<PlayerGameStatus> join(String playerName, SimpMessageHeaderAccessor accessor) {
         playerService.joinLobby(accessor.getSessionId(), playerName.trim());
         return playerService.getLoggedInPlayers();
     }
