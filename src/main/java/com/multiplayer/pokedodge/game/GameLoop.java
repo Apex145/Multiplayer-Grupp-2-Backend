@@ -11,8 +11,10 @@ public class GameLoop {
 
     private final PlayerService playerService;
     private final SimpMessagingTemplate msgTemp;
+    private final GameService gameService;
 
-    public GameLoop(PlayerService playerService, SimpMessagingTemplate msgTemp) {
+    public GameLoop(PlayerService playerService, GameService gameService, SimpMessagingTemplate msgTemp) {
+        this.gameService = gameService;
         this.playerService = playerService;
         this.msgTemp = msgTemp;
     }
@@ -25,5 +27,17 @@ public class GameLoop {
         }
         playerService.tick();
         msgTemp.convertAndSend("/pokemon/state", playerService.getLoggedInPlayers());
+    }
+
+    @Scheduled(fixedRate = 400)
+    public void spawnTick() {
+        FallingBlock block = gameService.spawnRandomBlock();
+        msgTemp.convertAndSend("/pokemon/spawnblocks" , block);
+    }
+
+    @Scheduled(fixedRate = 20)
+    public void fallTick() {
+        gameService.updateGameTick();
+        msgTemp.convertAndSend("/pokemon/activeblocks" , gameService.getActiveFallingBlocks());
     }
 }

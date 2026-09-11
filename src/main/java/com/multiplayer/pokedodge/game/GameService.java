@@ -37,8 +37,8 @@ public class GameService {
 
     private List<FallingBlock> activeFallingBlocks = new ArrayList<>();
     private static int MIN_X = 0;
-    private static int MAX_X = 90;
-    private static int DEFAULT_SPEED = 2; // block falls, per tick
+    private static int MAX_X = 115;
+    private static double DEFAULT_SPEED = 0.5; // block falls, per tick
 
     // spawn fallingblock at random x position
     // MIGHT HAVE TO TAKE ANOTHER LOOK INTO//

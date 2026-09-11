@@ -61,4 +61,15 @@ public class GameWebSocketController {
         return "true";
     }
 
+    @MessageMapping ("/game/spawnblocks")
+    @SendTo("/pokemon/spawnblocks")
+    public FallingBlock fallingBlock() {
+        return gameService.spawnRandomBlock();
+    }
+
+    @MessageMapping("/game/activeblocks")
+    @SendTo("/pokemon/activeblocks")
+    public List<FallingBlock> activeBlocks() {
+        return gameService.getActiveFallingBlocks();
+    }
 }
