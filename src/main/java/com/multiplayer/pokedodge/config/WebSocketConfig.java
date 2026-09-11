@@ -14,6 +14,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/pokemon");
         config.setApplicationDestinationPrefixes("/app");
+        config.setPreservePublishOrder(true); // makes sure signals arrive in the right order
     }
 
     @Override

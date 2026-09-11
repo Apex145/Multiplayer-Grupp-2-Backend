@@ -11,12 +11,12 @@ public class FallingBlock {
     public FallingBlock(int x, double speed) {
         this.id = UUID.randomUUID().toString();
         this.x = x;
-        this.y = 100.0; // start at the top
+        this.y = 10; // start at the top
         this.speed = speed;
     }
 
     public void updateBlockPosition() {
-        this.y -= speed; // move the blocks downwards
+        this.y += speed; // move the blocks downwards
     }
 
     public String getId() {
