@@ -1,9 +1,12 @@
 package com.multiplayer.pokedodge.game;
 
+import java.util.List;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.multiplayer.pokedodge.auth.Player;
 import com.multiplayer.pokedodge.auth.PlayerGameStatus;
 import com.multiplayer.pokedodge.auth.PlayerService;
 
@@ -42,14 +45,36 @@ public class GameLoop {
         msgTemp.convertAndSend("/pokemon/spawnblocks", block);
     }
 
+    private void checkGameOver() {
+        List<PlayerGameStatus> alivePlayers = playerService.getLoggedInPlayers()
+                .stream()
+                .filter(PlayerGameStatus::isAlive)
+                .toList();
+
+        if (alivePlayers.size() <= 1) {
+
+            Player winner = gameService.endGame(playerService.getLoggedInPlayers());
+
+            msgTemp.convertAndSend(
+                    "/pokemon/gameover",
+                    winner == null ? "DRAW" : winner.getPlayerName());
+
+            playerService.resetPlayers();
+        }
+    }
+
     @Scheduled(fixedRate = 20)
     public void fallTick() {
         if (playerService.getLoggedInPlayers().isEmpty()) {
             return;
         }
+
         gameService.updateGameTick();
         checkCollisions();
-        msgTemp.convertAndSend("/pokemon/activeblocks", gameService.getActiveFallingBlocks());
+        checkGameOver();
+
+        msgTemp.convertAndSend("/pokemon/activeblocks",
+                gameService.getActiveFallingBlocks());
     }
 
     private void checkCollisions() {
