@@ -38,7 +38,8 @@ public class GameService {
     private List<FallingBlock> activeFallingBlocks = new ArrayList<>();
     private static int MIN_X = 0;
     private static int MAX_X = 115;
-    private static double DEFAULT_SPEED = 0.5; // block falls, per tick
+    private static double DEFAULT_SPEED = 0.5;
+    private static final double GROUND_Y = 100.0; // block falls, per tick
 
     // spawn fallingblock at random x position
     // MIGHT HAVE TO TAKE ANOTHER LOOK INTO//
@@ -55,7 +56,7 @@ public class GameService {
             block.updateBlockPosition();
         }
         // Remove blocks when bottom is reached
-        activeFallingBlocks.removeIf(block -> block.getY() < 0);
+        activeFallingBlocks.removeIf(block -> block.getY() > GROUND_Y);
     }
 
     public List<FallingBlock> getActiveFallingBlocks() {
