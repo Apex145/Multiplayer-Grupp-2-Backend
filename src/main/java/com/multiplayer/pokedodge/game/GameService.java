@@ -18,9 +18,39 @@ public class GameService {
     private static final int PLAYER_SPAWN_Y_POSITION = 0; // bottom of the game area
 
     private PlayerRepository playerRepository;
+    private boolean gameRunning = false;
 
     public GameService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
+    }
+
+    public void startGame() {
+        gameRunning = true;
+    }
+
+    public boolean isGameRunning() {
+        return gameRunning;
+    }
+
+    public Player endGame(List<PlayerGameStatus> players) {
+        gameRunning = false;
+
+        PlayerGameStatus winner = players.stream()
+                .filter(PlayerGameStatus::isAlive)
+                .findFirst()
+                .orElse(null);
+
+        activeFallingBlocks.clear(); // <-- töm alla block
+
+        if (winner == null) {
+            return null;
+        }
+
+        Player player = playerRepository.findByPlayerName(winner.getPlayerName())
+                .orElseThrow();
+
+        player.setGamesWon(player.getGamesWon() + 1);
+        return playerRepository.save(player);
     }
 
     public PlayerGameStatus spawnPlayer(Player player, int slot) {

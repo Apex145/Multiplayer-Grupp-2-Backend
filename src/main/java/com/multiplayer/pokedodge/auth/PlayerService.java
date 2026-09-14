@@ -57,7 +57,7 @@ public class PlayerService {
 
     private int setPlayerSlot() {
         if (playersInLobby.size() >= MAX_PLAYERS) {
-             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lobby is full");
         }
         return playersInLobby.size() + 1;
     }
@@ -70,6 +70,15 @@ public class PlayerService {
                 case "right" -> player.setDirection(1);
                 case "none" -> player.setDirection(0);
             }
+        }
+    }
+
+    public void resetPlayers() {
+        for (PlayerGameStatus player : playersInLobby.values()) {
+            player.setAlive(true);
+            player.setX(50);
+            player.setY(100);
+            player.setDirection(0);
         }
     }
 
