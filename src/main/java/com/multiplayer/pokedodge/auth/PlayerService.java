@@ -51,7 +51,7 @@ public class PlayerService {
                 .setSessionId(sessionId)
                 .setSlot(setPlayerSlot())
                 .setX(50)
-                .setY(0)
+                .setY(100)
                 .setAlive(true));
     }
 
