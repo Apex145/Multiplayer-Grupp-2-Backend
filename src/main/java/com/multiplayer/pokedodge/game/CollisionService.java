@@ -9,28 +9,13 @@ import static com.multiplayer.pokedodge.game.GameDimensions.*;
 public class CollisionService {
 
     public boolean isColliding(PlayerGameStatus player, FallingBlock block) {
+        double playerCenterX = player.getX() + (PLAYER_VISUAL_WIDTH / 2.0);
+        double blockCenterX = block.getX() + (BLOCK_WIDTH / 2.0);
+
         boolean sameHeight = Math.abs(block.getY() - player.getY()) < HITBOX;
-        boolean overlapX = Math.abs(block.getX() - player.getX()) < (PLAYER_WIDTH + BLOCK_WIDTH) / 2.0;
+        boolean overlapX = Math.abs(blockCenterX - playerCenterX) < (PLAYER_HITBOX_WIDTH + BLOCK_WIDTH) / 2.0;
 
         return sameHeight && overlapX;
     }
     
 }
-
-
-// @Service 
-// public class CollisionService {
-
-//     public boolean isColliding(PlayerGameStatus player, FallingBlock block) {
-//         // Skriv ut koordinaterna i konsolen första gången för att verifiera skalan
-//         // System.out.println("Block Y: " + block.getY() + " | Player Y: " + player.getY());
-
-//         // 1. Överlapp i höjdled (Y-led)
-//         boolean sameHeight = Math.abs(block.getY() - player.getY()) < HITBOX;
-        
-//         // 2. Överlapp i sidled (X-led)
-//         boolean overlapX = Math.abs(block.getX() - player.getX()) < (PLAYER_WIDTH + BLOCK_WIDTH) / 2.0;
-
-//         return sameHeight && overlapX;
-//     }
-// }
