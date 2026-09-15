@@ -21,13 +21,12 @@ Players must dodge incoming attacks, navigate the arena, and outlast their oppon
 - Game stats updates instantly
 - Top 5 leaderboard
 
-
 ## Installation (Run Locally)
 - Prerequisites
 - Node.js 20+
 - Java 21
 - Maven
-- PostgreSQL (or your chosen database)
+- MongoDB
 
 ### **Backend**
 - git clone <backend-repository>
@@ -47,6 +46,12 @@ Players must dodge incoming attacks, navigate the arena, and outlast their oppon
 
 ### Frontend runs on:
 - http://localhost:5173
+
+## Known bugs - In progress  ##
+
+- Solo gameplay is not supported yet
+- After a match ends, all players must return to the lobby before a new game can start
+- Win scoring is currently inaccurate and may occasionally award significantly more points than intended for a single win
 
 
 ## Authors
