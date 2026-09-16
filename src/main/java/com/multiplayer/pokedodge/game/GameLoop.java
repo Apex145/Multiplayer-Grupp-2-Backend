@@ -69,6 +69,9 @@ public class GameLoop {
             return;
         }
 
+        if (!gameService.isGameRunning()) {
+            return;
+        }
         gameService.updateGameTick();
         checkCollisions();
         checkGameOver();

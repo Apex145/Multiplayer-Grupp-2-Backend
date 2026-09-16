@@ -23,6 +23,10 @@ public class PlayerService {
         this.playerRepository = playerRepository;
     }
 
+    public void setPlayersAlive() {
+        playersInLobby.forEach((sessionId, player) -> player.setAlive(true));
+    }
+
     public List<PlayerGameStatus> getLoggedInPlayers() {
         return playersInLobby.values().stream()
                 .sorted(Comparator.comparingInt(PlayerGameStatus::getSlot))
