@@ -2,6 +2,9 @@
 
 A real-time multiplayer Pokémon-inspired dodge game built with a **React + TypeScript** frontend and **Spring Boot** backend.
 
+## 🎮 Play the Game
+https://pokedodge-tuhqk.ondigitalocean.app
+
 
 ## Frontend
 https://github.com/Apex145/Multiplayer-Grupp-2-Frontend
@@ -31,7 +34,10 @@ Players must dodge incoming attacks, navigate the arena, and outlast their oppon
 ### **Backend**
 - git clone <backend-repository>
 - cd backend
-- cp .env.example .env
+- setup your .env file like the one below
+```ruby
+MONGODB_URI=mongodb://localhost:27017/pokedodge
+```
 - ./mvnw spring-boot:run
 
 ### Backend runs on:
@@ -41,8 +47,8 @@ Players must dodge incoming attacks, navigate the arena, and outlast their oppon
 - git clone <frontend-repository>
 - cd frontend
 - npm install
-- cp .env.example .env
 - npm run dev
+
 
 ### Frontend runs on:
 - http://localhost:5173
