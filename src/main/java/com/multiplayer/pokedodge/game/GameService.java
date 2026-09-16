@@ -3,12 +3,10 @@ package com.multiplayer.pokedodge.game;
 import com.multiplayer.pokedodge.auth.Player;
 import com.multiplayer.pokedodge.auth.PlayerGameStatus;
 import com.multiplayer.pokedodge.auth.PlayerRepository;
-import com.multiplayer.pokedodge.auth.PlayerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.el.stream.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,22 +23,22 @@ public class GameService {
     }
 
     public void startGame() {
-        gameRunning = true;
+        this.gameRunning = true;
     }
 
     public boolean isGameRunning() {
-        return gameRunning;
+        return this.gameRunning;
     }
 
     public Player endGame(List<PlayerGameStatus> players) {
-        gameRunning = false;
+        this.gameRunning = false;
 
         PlayerGameStatus winner = players.stream()
                 .filter(PlayerGameStatus::isAlive)
                 .findFirst()
                 .orElse(null);
 
-        activeFallingBlocks.clear(); // <-- töm alla block
+        this.activeFallingBlocks.clear(); // <-- clear all blocks
 
         if (winner == null) {
             return null;
@@ -75,6 +73,10 @@ public class GameService {
     // MIGHT HAVE TO TAKE ANOTHER LOOK INTO//
     // THE RANDOMIZATION FUNCTION
     public FallingBlock spawnRandomBlock() {
+                 // only spawn blocks when a game is running
+        if (!isGameRunning()) {
+            return null;  
+        }
         int randomX = (int) Math.floor(Math.random() * (MAX_X - MIN_X));
         FallingBlock block = new FallingBlock(randomX, DEFAULT_SPEED);
         activeFallingBlocks.add(block);
@@ -82,6 +84,10 @@ public class GameService {
     }
 
     public void updateGameTick() {
+        if (!isGameRunning()) {
+            return;  
+        }
+
         for (FallingBlock block : activeFallingBlocks) {
             block.updateBlockPosition();
         }

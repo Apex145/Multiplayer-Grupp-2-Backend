@@ -58,6 +58,8 @@ public class GameWebSocketController {
     @MessageMapping("/game/start")
     @SendTo("/pokemon/start")
     public String startGame() {
+        gameService.startGame();
+        playerService.setPlayersAlive();
         return "true";
     }
 
